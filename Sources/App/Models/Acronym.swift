@@ -20,5 +20,4 @@ extension Acronym: SQLiteModel {}
 
 extension Acronym: Migration {}
 
-
 extension Acronym: Content {}
