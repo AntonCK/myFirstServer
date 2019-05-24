@@ -27,7 +27,7 @@ public func routes(_ router: Router) throws {
     
     router.get("deleteUser") { req -> String in
         UserDefaults.standard.removeObject(forKey: "Users")
-        if UserDefaults.standard.value(forKey: "Users") != nil {
+        if UserDefaults.standard.object(forKey: "Users") != nil {
             return "false"
         } else {
             return "success"
@@ -35,8 +35,8 @@ public func routes(_ router: Router) throws {
     }
 }
 private func getUsers() -> [Visitor]? {
-    if UserDefaults.standard.value(forKey: "Users") != nil {
-        let users:[[String: Any]] = UserDefaults.standard.value(forKey: "Users") as! [[String: Any]]
+    if UserDefaults.standard.object(forKey: "Users") != nil {
+        let users:[[String: Any]] = UserDefaults.standard.object(forKey: "Users") as! [[String: Any]]
         var visitors:[Visitor] = []
         for user in users {
             let name = user["name"] as! String
@@ -60,7 +60,7 @@ private func getUsers() -> [Visitor]? {
 private func setUsers(userForStor: [String: Any]) -> String {
     let visitor:[String: Any] = parseVisitor(user: userForStor)
     var visitors:[[String: Any]] = []
-    if let users = UserDefaults.standard.value(forKey: "Users") {
+    if let users = UserDefaults.standard.object(forKey: "Users") {
         visitors = users as! [[String : Any]]
     }
     visitors.append(visitor)
