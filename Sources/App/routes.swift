@@ -20,8 +20,7 @@ public func routes(_ router: Router) throws {
     }
     
     router.post(Visitor.self, at: "saveUser") { req, data -> SaveVisitorResponse in
-        let user: [String: Any] = ["name": data.name, "id": data.id, "lat": data.lat, "long": data.long]
-        return SaveVisitorResponse(visitor: data, success: setUsers(userForStor: user))
+        return SaveVisitorResponse(visitor: data, success: setUsers(userForStor: data))
     }
     
     router.get("deleteUser") { req -> String in
@@ -33,39 +32,26 @@ public func routes(_ router: Router) throws {
         }
     }
 }
+
 private func getUsers() -> [Visitor]? {
-    if UserDefaults.standard.object(forKey: "Users") != nil {
-        let users:[[String: Any]] = UserDefaults.standard.object(forKey: "Users") as! [[String: Any]]
+        let users = getFromDefaults()
         var visitors:[Visitor] = []
         for user in users {
-            let name = user["name"] as! String
-            let id = user["id"] as! String
-            let lat = user["lat"] as! Double
-            let long = user["long"] as! Double
-            let visitor = Visitor(lat: lat, long: long, name: name, id: id)
+            let visitor = Visitor(lat: user.lat, long: user.long, name: user.name, id: user.id)
             if visitors.isEmpty {
                 visitors = [visitor]
             } else {
                 visitors.append(visitor)
             }
         }
-        
         return visitors
-    } else {
-        return []
-    }
 }
 
-private func setUsers(userForStor: [String: Any]) -> String {
-    let visitor:[String: Any] = parseVisitor(user: userForStor)
-    var visitors:[[String: Any]] = []
-    if let users = UserDefaults.standard.object(forKey: "Users") {
-        visitors = users as! [[String : Any]]
-    }
+private func setUsers(userForStor: Visitor) -> String {
+    let visitor = userForStor
+    var visitors:[Visitor] = getFromDefaults()
     visitors.append(visitor)
-    print("visitorsBeforeSave")
-    print(visitors)
-    UserDefaults.standard.set(visitors, forKey: "Users")
+    saveToDefaults(visitir: visitors)
     return "success"
 }
 
@@ -77,6 +63,20 @@ private func parseVisitor(user: [String: Any]) -> [String: Any] {
     return ["lat": lat, "long": long, "name": name, "id": id]
 }
 
+private func saveToDefaults (visitir: [Visitor]) {
+    UserDefaults.standard.set(try? PropertyListEncoder().encode(visitir), forKey:"Users")
+}
+
+private func getFromDefaults () -> [Visitor] {
+    if let data = UserDefaults.standard.value(forKey:"Users") as? Data {
+        let visitors = try? PropertyListDecoder().decode(Array<Visitor>.self, from: data)
+        return visitors ?? []
+    } else {
+        return []
+    }
+}
+
+// structs
 struct SaveVisitorResponse: Content {
     let visitor: Visitor
     let success: String
