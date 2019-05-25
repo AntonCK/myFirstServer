@@ -68,7 +68,7 @@ private func saveToDefaults (visitir: [Visitor]) {
 }
 
 private func getFromDefaults () -> [Visitor] {
-    if let data = UserDefaults.standard.value(forKey:"Users") as? Data {
+    if let data = UserDefaults.standard.object(forKey:"Users") as? Data {
         let visitors = try? PropertyListDecoder().decode(Array<Visitor>.self, from: data)
         return visitors ?? []
     } else {
