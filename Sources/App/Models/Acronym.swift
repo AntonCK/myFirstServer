@@ -15,9 +15,3 @@ extension Acronym: Model {
     typealias ID = Int
     public static var idKey: IDKey = \Acronym.id
 }
-
-//extension Acronym: SQLiteModel {}
-
-//extension Acronym: Migration {}
-
-//extension Acronym: Content {}
