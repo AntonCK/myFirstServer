@@ -65,16 +65,25 @@ private func parseVisitor(user: [String: Any]) -> [String: Any] {
 }
 
 private func saveToDefaults (visitir: [Visitor]) {
-    UserDefaults.standard.set(try? PropertyListEncoder().encode(visitir), forKey:"Users")
+    do {
+        let jsonData = try JSONEncoder().encode(visitir)
+        let jsonString = String(data: jsonData, encoding: .utf8)!
+        UserDefaults.standard.set(jsonString, forKey:"Users")
+    } catch {
+        print(error)
+    }
 }
 
 private func getFromDefaults () -> [Visitor] {
-    if let data = UserDefaults.standard.object(forKey:"Users") as? Data {
-        let visitors = try? PropertyListDecoder().decode(Array<Visitor>.self, from: data)
-        return visitors ?? []
-    } else {
-        return []
-    }
+        do {
+            let string = UserDefaults.standard.object(forKey:"Users") as! String
+            let data = string.data(using: .utf8)
+            let decodedSentences = try JSONDecoder().decode(Array<Visitor>.self, from: data!)
+            return decodedSentences
+        } catch {
+            print(error)
+            return[]
+        }
 }
 
 // structs
