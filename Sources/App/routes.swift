@@ -21,7 +21,6 @@ public func routes(_ router: Router) throws {
     
     router.post(Visitor.self, at: "saveUser") { req, data -> SaveVisitorResponse in
         let user: [String: Any] = ["name": data.name, "id": data.id, "lat": data.lat, "long": data.long]
-        
         return SaveVisitorResponse(visitor: data, success: setUsers(userForStor: user))
     }
     
@@ -64,6 +63,8 @@ private func setUsers(userForStor: [String: Any]) -> String {
         visitors = users as! [[String : Any]]
     }
     visitors.append(visitor)
+    print("visitorsBeforeSave")
+    print(visitors)
     UserDefaults.standard.set(visitors, forKey: "Users")
     return "success"
 }
