@@ -16,8 +16,8 @@ extension Acronym: Model {
     public static var idKey: IDKey = \Acronym.id
 }
 
-extension Acronym: SQLiteModel {}
+//extension Acronym: SQLiteModel {}
 
-extension Acronym: Migration {}
+//extension Acronym: Migration {}
 
-extension Acronym: Content {}
+//extension Acronym: Content {}
